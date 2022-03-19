@@ -4,7 +4,9 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class Cards {
+import java.io.Serializable;
+
+public class Cards implements Serializable {
     private String frontData;
     private String BackData;
     public Cards(String fdata, String bdata){

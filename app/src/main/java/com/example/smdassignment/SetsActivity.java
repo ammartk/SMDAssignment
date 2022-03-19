@@ -20,23 +20,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CardsActivity extends AppCompatActivity implements CardsAdapter.CardItemListener {
+public class SetsActivity extends AppCompatActivity implements SetsAdapter.SetsItemClickListener {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    ArrayList<Cards> dataset = new ArrayList<Cards>();
-    ActivityResultLauncher<Intent> CardLauncher;
-    private int currentSetID;
-    private EditText search;
+    ArrayList<Sets> dataset = new ArrayList<Sets>();
+    ActivityResultLauncher<Intent> CardsLauncher;
+    ActivityResultLauncher<Intent> NameLauncher;
+    Sets currentSet;
+    EditText search;
     Filterable filterable;
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cards);
+        setContentView(R.layout.activity_sets);
 
-        search = (EditText) findViewById(R.id.searchCard);
+        search = (EditText) findViewById(R.id.search);
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -54,13 +54,29 @@ public class CardsActivity extends AppCompatActivity implements CardsAdapter.Car
             }
         });
 
-
-        recyclerView = (RecyclerView) findViewById(R.id.CardsList);
+        recyclerView = (RecyclerView) findViewById(R.id.SetsList);
         recyclerView.setHasFixedSize(true);
-        Intent intent = getIntent();
-        currentSetID = intent.getIntExtra("id", 0);
-        dataset = (ArrayList<Cards>) intent.getSerializableExtra("cards");
-        CardLauncher = registerForActivityResult(
+
+        CardsLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+
+                    public void onActivityResult(ActivityResult result) {
+                        if(result.getResultCode() == RESULT_OK){
+                            Intent data = result.getData();
+                            int id = data.getIntExtra("pos", 0);
+                            ArrayList<Cards> temp = (ArrayList<Cards>) data.getSerializableExtra("cards");
+                            Sets t = dataset.get(id);
+                            t.setDataset(temp);
+                            dataset.set(id, t);
+                            mAdapter.notifyDataSetChanged();
+                            // handle incoming data from child
+                            // handle incoming data from child
+                        }
+                    }
+                });
+
+        NameLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
 
@@ -68,8 +84,10 @@ public class CardsActivity extends AppCompatActivity implements CardsAdapter.Car
                         if(result.getResultCode() == RESULT_OK){
                             Intent data = result.getData();
                             int id = data.getIntExtra("id", 0);
-                            Cards temp = (Cards) data.getSerializableExtra("content");
-                            dataset.set(id, temp);
+                            String text = data.getStringExtra("content");
+                            Sets set = dataset.get(id);
+                            set.setTitle(text);
+                            dataset.set(id, set);
                             mAdapter.notifyDataSetChanged();
                             // handle incoming data from child
                             // handle incoming data from child
@@ -78,38 +96,33 @@ public class CardsActivity extends AppCompatActivity implements CardsAdapter.Car
                 });
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        CardsAdapter adp = new CardsAdapter(dataset, this);
+        SetsAdapter adp = new SetsAdapter(dataset, this);
         mAdapter = adp;
         filterable = adp;
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
 
     }
-    @Override
-    public void onBackPressed(){
-        Intent i = new Intent();
-        i.putExtra("pos", currentSetID);
-        i.putExtra("cards", (Serializable) dataset);
-        setResult(RESULT_OK, i);
-        finish();
+    public void clickHandlerSet(View v){
+        if (v.getId() == R.id.setsButton){
+            ArrayList<Cards> sets = new ArrayList<Cards>();
+            Sets set = new Sets("FEE",sets);
 
-    }
-
-    public void clickHandler(View v){
-        if (v.getId() == R.id.push_button){
-            Cards card = new Cards("FEE", "FI");
-            dataset.add(card);
-            Intent intent = new Intent(this,CardActivity.class);
-            intent.putExtra("id", dataset.size() - 1);
-            CardLauncher.launch(intent);
+            dataset.add(set);
+            ArrayList<Cards> test = dataset.get(dataset.size() - 1).getDataset();
             mAdapter.notifyDataSetChanged();
+            Intent intent = new Intent(this, InputSetActivity.class);
+            intent.putExtra("id", dataset.size() - 1);
+            NameLauncher.launch(intent);
         }
     }
     @Override
-    public void onClickListener(Cards n) {
-        Intent intent = new Intent(this,CardActivity.class);
+    public void onClick(Sets n) {
+        Intent intent = new Intent(this,CardsActivity.class);
+        ArrayList<Cards> test = dataset.get(dataset.size() - 1).getDataset();
         intent.putExtra("id", dataset.size() - 1);
-        CardLauncher.launch(intent);
+        intent.putExtra("cards", (Serializable) test);
+        CardsLauncher.launch(intent);
 
     }
 }
