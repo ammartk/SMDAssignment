@@ -64,14 +64,14 @@ public class SetsAdapter extends RecyclerView.Adapter<SetsAdapter.SetsViewHolder
                 @Override
                 public void onClick(View view) {
                     int pos = (int) v.getTag();
-                    listener.onClick(filteredSets.get(pos));
+                    listener.onClick(filteredSets.get(pos), pos);
                 }
             });
         }
 
     }
     public interface SetsItemClickListener{
-        public void onClick(Sets n);
+        public void onClick(Sets n, int pos);
     }
 
     private class SetsFilter extends Filter {

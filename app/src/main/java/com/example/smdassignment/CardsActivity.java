@@ -106,9 +106,12 @@ public class CardsActivity extends AppCompatActivity implements CardsAdapter.Car
         }
     }
     @Override
-    public void onClickListener(Cards n) {
+    public void onClickListener(Cards n, int position) {
         Intent intent = new Intent(this,CardActivity.class);
-        intent.putExtra("id", dataset.size() - 1);
+        intent.putExtra("id", position);
+        Cards temp = dataset.get(position);
+        intent.putExtra("card", (Serializable) temp);
+
         CardLauncher.launch(intent);
 
     }

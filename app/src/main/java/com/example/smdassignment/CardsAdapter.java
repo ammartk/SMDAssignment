@@ -37,7 +37,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.CardsViewHol
                 @Override
                 public void onClick(View view) {
                     int pos = (int) v.getTag();
-                    listener.onClickListener(filteredData.get(pos));
+                    listener.onClickListener(filteredData.get(pos), pos);
                 }
             });
         }
@@ -69,7 +69,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.CardsViewHol
         return filteredData.size();
     }
     public interface CardItemListener{
-        public void onClickListener(Cards n);
+        public void onClickListener(Cards n, int pos);
     }
 
     private class CardsFilter extends Filter {

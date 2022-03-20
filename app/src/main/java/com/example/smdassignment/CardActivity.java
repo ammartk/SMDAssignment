@@ -22,6 +22,11 @@ public class CardActivity extends AppCompatActivity {
         back = (EditText) findViewById(R.id.BackCardData);
         Intent intent = getIntent();
         currentCardID = intent.getIntExtra("id", 0);
+        Cards card = (Cards) intent.getSerializableExtra("card");
+        if(card != null) {
+            front.setText(card.getTitle());
+            back.setText(card.getBackData());
+        }
     }
     public void buttonClick(View v){
 

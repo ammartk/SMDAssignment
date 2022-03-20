@@ -117,10 +117,10 @@ public class SetsActivity extends AppCompatActivity implements SetsAdapter.SetsI
         }
     }
     @Override
-    public void onClick(Sets n) {
+    public void onClick(Sets n, int position) {
         Intent intent = new Intent(this,CardsActivity.class);
-        ArrayList<Cards> test = dataset.get(dataset.size() - 1).getDataset();
-        intent.putExtra("id", dataset.size() - 1);
+        ArrayList<Cards> test = dataset.get(position).getDataset();
+        intent.putExtra("id", position);
         intent.putExtra("cards", (Serializable) test);
         CardsLauncher.launch(intent);
 
