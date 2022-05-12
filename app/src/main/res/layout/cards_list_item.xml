@@ -2,12 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/cardview_default_radius">
+    android:layout_height="wrap_content"
+    android:layout_margin="10sp">
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/Cardtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="test"
         android:textSize="10pt"
     />
+
 </LinearLayout>
